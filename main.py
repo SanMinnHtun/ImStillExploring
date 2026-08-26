@@ -7,7 +7,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from career_advisor import calculate_results
+from career_advisor.questionnaire import calculate_results
+from career_advisor.resource_analyzer import analyze_and_curate_roadmap
 
 
 class QuestionnaireSubmission(BaseModel):

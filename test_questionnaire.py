@@ -21,13 +21,19 @@ class QuestionnaireTests(unittest.TestCase):
         self.assertEqual(
             result["top_career_matches"],
             [
-                {"title": "Software Development", "percentage": 30, "color": "#8B5CF6"},
-                {"title": "UI/UX Design", "percentage": 30, "color": "#F97316"},
-                {"title": "AI/ML & Intelligent Systems", "percentage": 10, "color": "#C084FC"},
-                {"title": "Cyber Security & Networking", "percentage": 30, "color": "#EAB308"},
+                {"title": "UI/UX Design", "percentage": 16, "color": "#F97316"},
+                {"title": "Cyber Security & Networking", "percentage": 16, "color": "#EAB308"},
+                {"title": "DevOps & Cloud Architecture", "percentage": 14, "color": "#10B981"},
+                {"title": "Game Development & Interactive Media", "percentage": 11, "color": "#EC4899"},
+                {"title": "Frontend Engineering", "percentage": 11, "color": "#06B6D4"},
+                {"title": "Security Operations & Threat Intelligence", "percentage": 11, "color": "#F59E0B"},
+                {"title": "Software Development", "percentage": 8, "color": "#8B5CF6"},
+                {"title": "Data Engineering & Analytics", "percentage": 8, "color": "#3B82F6"},
+                {"title": "AI/ML & Intelligent Systems", "percentage": 5, "color": "#C084FC"},
             ],
         )
-        self.assertEqual(result["primary_field"], "Software Development")
+        self.assertEqual(result["primary_field"], "UI/UX Design")
+        self.assertEqual(sum(match["percentage"] for match in result["top_career_matches"]), 100)
 
     def test_invalid_answers_raise_value_error(self):
         with self.assertRaises(ValueError):

@@ -110,3 +110,6 @@ def analyze_resources(user_profile: Mapping[str, Any], available_app_resources: 
     lines.extend(["", "### Phase 3: Applied Projects (Weeks 9-12)"])
     lines.append(_item_line(capstone) if capstone else "- No matching internal capstone project available.")
     return "\n".join(lines)
+
+
+analyze_and_curate_roadmap = analyze_resources

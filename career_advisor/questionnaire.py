@@ -134,10 +134,15 @@ _CATEGORY_DETAILS = (
     ("UI/UX Design", ("VIS",), "#F97316"),
     ("AI/ML & Intelligent Systems", ("DAT",), "#C084FC"),
     ("Cyber Security & Networking", ("SEC",), "#EAB308"),
+    ("Data Engineering & Analytics", ("DAT", "SYS"), "#3B82F6"),
+    ("Game Development & Interactive Media", ("INT", "VIS"), "#EC4899"),
+    ("DevOps & Cloud Architecture", ("SYS", "SEC"), "#10B981"),
+    ("Frontend Engineering", ("VIS", "INT"), "#06B6D4"),
+    ("Security Operations & Threat Intelligence", ("SEC", "DAT"), "#F59E0B"),
 )
 
 
-def calculate_results(answers):
+def calculate_results(answers: dict) -> dict:
     """Calculate career category percentages from Q1-Q10 letter selections."""
     expected_questions = set(ANSWER_MAPPING)
     supplied_questions = set(answers)
@@ -160,10 +165,28 @@ def calculate_results(answers):
             )
         trait_counts[ANSWER_MAPPING[question_id][selected_option]] += 1
 
-    matches = []
+    raw_scores = []
     for title, traits, color in _CATEGORY_DETAILS:
-        percentage = sum(trait_counts[trait] for trait in traits) * 10
-        matches.append({"title": title, "percentage": percentage, "color": color})
+        raw_score = sum(trait_counts[trait] for trait in traits) / len(traits)
+        raw_scores.append((title, raw_score, color))
+
+    total_raw_scores = sum(raw_score for _, raw_score, _ in raw_scores)
+    rounded_percentages = [round(raw_score / total_raw_scores * 100) for _, raw_score, _ in raw_scores]
+    rounding_difference = 100 - sum(rounded_percentages)
+    if rounding_difference:
+        adjustment_order = sorted(
+            range(len(raw_scores)),
+            key=lambda index: raw_scores[index][1] / total_raw_scores * 100 - rounded_percentages[index],
+            reverse=rounding_difference > 0,
+        )
+        for index in adjustment_order[:abs(rounding_difference)]:
+            rounded_percentages[index] += 1 if rounding_difference > 0 else -1
+
+    matches = [
+        {"title": title, "percentage": rounded_percentages[index], "color": color}
+        for index, (title, _, color) in enumerate(raw_scores)
+    ]
+    matches.sort(key=lambda match: match["percentage"], reverse=True)
 
     primary_field = max(matches, key=lambda match: match["percentage"])["title"]
     return {"top_career_matches": matches, "primary_field": primary_field}
