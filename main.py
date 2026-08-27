@@ -31,6 +31,11 @@ def healthcheck():
     return {"status": "ok"}
 
 
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "Career Advisor API"}
+
+
 @app.post("/api/diagnose")
 def diagnose(submission: QuestionnaireSubmission):
     try:
